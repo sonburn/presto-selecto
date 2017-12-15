@@ -1,0 +1,310 @@
+@import 'MochaJSDelegate.js';
+
+var pluginName = "Presto Selecto",
+	pluginDomain = "com.sonburn.sketchplugins.presto-selecto";
+
+var layerLabels = ["Everything","Artboards","Groups","Slices","Text Layers"],
+	layerTypes = ["*","MSArtboardGroup","MSLayerGroup","MSSliceLayer","MSTextLayer"],
+	parentLabels = ["Artboard"],
+	parentTypes = ["parentArtboard.name"],
+	matchTypes = ["is","is not","contains","begins with","ends with"],
+	matchFormats = ["==","!=","CONTAINS","BEGINSWITH","ENDSWITH"];
+
+var windowWidth = 400;
+
+var onRun = function(context) {
+	var defaultSettings = {};
+
+	defaultSettings.layerClassSelect = 0;
+	defaultSettings.layerMatchSelect = 0;
+	defaultSettings.layerMatchString = "";
+	defaultSettings.parentIncludeToggle = 0;
+	defaultSettings.parentClassSelect = 0;
+	defaultSettings.parentMatchSelect = 0;
+	defaultSettings.parentMatchString = "";
+	defaultSettings.stringCaseToggle = 0;
+
+	var userSettings = Object.assign({},defaultSettings); // Create a copy of defaultSettings
+
+	userSettings = getCachedSettings(context,userSettings);
+
+	var pluginWindow = NSAlert.alloc().init(),
+		pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path(),
+		pluginIcon = NSImage.alloc().initByReferencingFile(pluginIconPath),
+		pluginContent = createContentView(NSMakeRect(0,0,windowWidth,186));
+
+	pluginWindow.setIcon(pluginIcon);
+	pluginWindow.setMessageText(pluginName);
+
+	var layerClassSelect = createSelect(layerLabels,userSettings.layerClassSelect,NSMakeRect(61,0,95,28)),
+		layerMatchSelect = createSelect(matchTypes,userSettings.layerMatchSelect,NSMakeRect(258,0,95,28)),
+		layerMatchString = createTextField(userSettings.layerMatchString,"Layer string to match…",NSMakeRect(0,36,windowWidth,24)),
+		parentIncludeToggle = createCheckbox({name:"and has a parent",value:1},userSettings.parentIncludeToggle,NSMakeRect(0,88,116,16)),
+		parentClassSelect = createSelect(parentLabels,userSettings.parentClassSelect,NSMakeRect(121,82,85,28)),
+		parentTextLabel = createTextLabel("where the name",NSMakeRect(208,87,95,28)),
+		parentMatchSelect = createSelect(matchTypes,userSettings.parentMatchSelect,NSMakeRect(308,82,95,28)),
+		parentMatchString = createTextField(userSettings.parentMatchString,"Parent string to match…",NSMakeRect(0,118,windowWidth,24)),
+		stringCaseToggle = createCheckbox({name:"Case sensitive",value:1},userSettings.stringCaseToggle,NSMakeRect(0,170,windowWidth,16));
+
+	var layerClassSelectDelegate = new MochaJSDelegate({
+		"comboBoxSelectionDidChange:" : (function() {
+			if (layerClassSelect.indexOfSelectedItem() > 1) {
+				parentIncludeToggle.setEnabled(1);
+				parentTextLabel.setTextColor(NSColor.colorWithCalibratedRed_green_blue_alpha(0/255,0/255,0/255,1));
+			} else {
+				parentIncludeToggle.setState(0);
+				parentIncludeToggle.setEnabled(0);
+				parentClassSelect.setEnabled(0);
+				parentMatchSelect.setEnabled(0);
+				parentMatchString.setEnabled(0);
+				parentTextLabel.setTextColor(NSColor.colorWithCalibratedRed_green_blue_alpha(0/255,0/255,0/255,0.25));
+			}
+		})
+	});
+
+	layerClassSelect.setDelegate(layerClassSelectDelegate.getClassInstance());
+
+	parentIncludeToggle.setAction("callAction:");
+	parentIncludeToggle.setCOSJSTargetFunction(function(sender) {
+		if (sender.state() == 1) {
+			parentClassSelect.setEnabled(1);
+			parentMatchSelect.setEnabled(1);
+			parentMatchString.setEnabled(1);
+		} else {
+			parentClassSelect.setEnabled(0);
+			parentMatchSelect.setEnabled(0);
+			parentMatchString.setEnabled(0);
+		}
+	});
+
+	if (userSettings.layerClassSelect <= 1) {
+		parentIncludeToggle.setEnabled(0);
+
+		if (userSettings.parentIncludeToggle == 0) {
+			parentClassSelect.setEnabled(0);
+			parentMatchSelect.setEnabled(0);
+			parentMatchString.setEnabled(0);
+			parentTextLabel.setTextColor(NSColor.colorWithCalibratedRed_green_blue_alpha(0/255,0/255,0/255,0.25));
+		}
+	}
+
+	pluginContent.addSubview(createTextLabel("Select all",NSMakeRect(0,5,56,28)));
+	pluginContent.addSubview(layerClassSelect);
+	pluginContent.addSubview(createTextLabel("where the name",NSMakeRect(158,5,95,28)));
+	pluginContent.addSubview(layerMatchSelect);
+	pluginContent.addSubview(layerMatchString);
+	pluginContent.addSubview(createDivider(NSMakeRect(0,72,windowWidth,1)));
+	pluginContent.addSubview(parentIncludeToggle);
+	pluginContent.addSubview(parentClassSelect);
+	pluginContent.addSubview(parentTextLabel);
+	pluginContent.addSubview(parentMatchSelect);
+	pluginContent.addSubview(parentMatchString);
+	pluginContent.addSubview(createDivider(NSMakeRect(0,154,windowWidth,1)));
+	pluginContent.addSubview(stringCaseToggle);
+
+	pluginWindow.setAccessoryView(pluginContent);
+
+	var selectButton = pluginWindow.addButtonWithTitle("Select");
+
+	pluginWindow.addButtonWithTitle("Cancel");
+
+	var defaultsButton = pluginWindow.addButtonWithTitle("Defaults");
+
+	defaultsButton.setCOSJSTargetFunction(function() {
+		layerClassSelect.selectItemAtIndex(defaultSettings.layerClassSelect);
+		layerMatchSelect.selectItemAtIndex(defaultSettings.layerMatchSelect);
+		layerMatchString.setStringValue(defaultSettings.layerMatchString);
+		parentIncludeToggle.setState(defaultSettings.parentIncludeToggle);
+		parentMatchSelect.selectItemAtIndex(defaultSettings.parentMatchSelect);
+		parentMatchString.setStringValue(defaultSettings.parentMatchString);
+		stringCaseToggle.setState(defaultSettings.stringCaseToggle);
+
+		parentIncludeToggle.setEnabled(0);
+		parentClassSelect.setEnabled(0);
+		parentMatchSelect.setEnabled(0);
+		parentMatchString.setEnabled(0);
+
+		context.command.setValue_forKey_onLayer(nil,"layerClassSelect",context.document.documentData());
+		context.command.setValue_forKey_onLayer(nil,"layerMatchSelect",context.document.documentData());
+		context.command.setValue_forKey_onLayer(nil,"layerMatchString",context.document.documentData());
+		context.command.setValue_forKey_onLayer(nil,"parentIncludeToggle",context.document.documentData());
+		context.command.setValue_forKey_onLayer(nil,"parentMatchSelect",context.document.documentData());
+		context.command.setValue_forKey_onLayer(nil,"parentMatchString",context.document.documentData());
+		context.command.setValue_forKey_onLayer(nil,"stringCaseToggle",context.document.documentData());
+	});
+
+	setKeyOrder(pluginWindow,[
+		layerClassSelect,
+		layerMatchSelect,
+		layerMatchString,
+		parentIncludeToggle,
+		parentClassSelect,
+		parentMatchSelect,
+		parentMatchString,
+		stringCaseToggle
+	]);
+
+	windowLoop();
+
+	function windowLoop() {
+		var windowStatus = null;
+
+		while (windowStatus == null) {
+			var windowResponse = pluginWindow.runModal();
+
+			if (windowResponse == 1000) {
+				var layerMatchClass = layerTypes[layerClassSelect.indexOfSelectedItem()],
+					layerMatchFormat = matchFormats[layerMatchSelect.indexOfSelectedItem()],
+					layerMatchCase = (stringCaseToggle.state() == 1) ? "" : "[c]",
+					layerMatchValue = layerMatchString.stringValue(),
+					parentToggleState = parentIncludeToggle.state(),
+					parentMatchClass = parentTypes[parentClassSelect.indexOfSelectedItem()],
+					parentMatchFormat = matchFormats[parentMatchSelect.indexOfSelectedItem()],
+					parentMatchCase = (stringCaseToggle.state() == 1) ? "" : "[c]",
+					parentMatchValue = parentMatchString.stringValue();
+
+				if (layerMatchValue != "" && parentToggleState == 0 || layerMatchValue != "" && parentToggleState == 1 && parentMatchValue != "") {
+					windowStatus = true;
+				}
+			} else {
+				windowStatus = false;
+			}
+
+			switch (windowStatus) {
+				case null :
+					if (layerMatchValue == "") {
+						displayDialog(pluginName,"Please provide a layer string to search for.");
+					} else {
+						displayDialog(pluginName,"Please provide a parent string to search for.");
+					}
+
+					break;
+				case true :
+					context.command.setValue_forKey_onLayer(layerClassSelect.indexOfSelectedItem(),"layerClassSelect",context.document.documentData());
+					context.command.setValue_forKey_onLayer(layerMatchSelect.indexOfSelectedItem(),"layerMatchSelect",context.document.documentData());
+					context.command.setValue_forKey_onLayer(layerMatchString.stringValue(),"layerMatchString",context.document.documentData());
+					context.command.setValue_forKey_onLayer(parentIncludeToggle.state(),"parentIncludeToggle",context.document.documentData());
+					context.command.setValue_forKey_onLayer(parentMatchSelect.indexOfSelectedItem(),"parentMatchSelect",context.document.documentData());
+					context.command.setValue_forKey_onLayer(parentMatchString.stringValue(),"parentMatchString",context.document.documentData());
+					context.command.setValue_forKey_onLayer(stringCaseToggle.state(),"stringCaseToggle",context.document.documentData());
+
+					if (parentIncludeToggle.state() == 1) {
+						var predicate = NSPredicate.predicateWithFormat("className LIKE %@ AND name " + layerMatchFormat + layerMatchCase + " %@ AND " + parentMatchClass + " " + parentMatchFormat + parentMatchCase + " %@",layerMatchClass,layerMatchValue,parentMatchValue);
+					} else {
+						var predicate = NSPredicate.predicateWithFormat("className LIKE %@ AND name " + layerMatchFormat + layerMatchCase + " %@",layerMatchClass,layerMatchValue);
+					}
+
+					var page = context.document.currentPage(),
+						matches = page.children().filteredArrayUsingPredicate(predicate),
+						loop = matches.objectEnumerator(),
+						match,
+						count = 0;
+
+					page.changeSelectionBySelectingLayers(nil);
+
+					while (match = loop.nextObject()) {
+						match.select_byExpandingSelection(true,true);
+						count++;
+					}
+
+					if (count > 0) {
+						context.document.showMessage(matches.count() + " " + layerLabels[layerClassSelect.indexOfSelectedItem()] + " selected");
+					} else {
+						context.document.showMessage("No matches found");
+					}
+
+					break;
+				case false :
+					break;
+			}
+		}
+	}
+}
+
+function createContentView(frame) {
+	var view = NSView.alloc().initWithFrame(frame);
+
+	view.setFlipped(1);
+
+	return view;
+}
+
+function createTextLabel(string,frame) {
+	var textLabel = NSTextField.alloc().initWithFrame(frame);
+
+	textLabel.setStringValue(string);
+	textLabel.setBezeled(0);
+	textLabel.setEditable(0);
+	textLabel.setDrawsBackground(0);
+
+	return textLabel;
+}
+
+function createTextField(string,placeholder,frame) {
+	var textField = NSTextField.alloc().initWithFrame(frame);
+
+	textField.setStringValue(string);
+	textField.setPlaceholderString(placeholder);
+
+	return textField;
+}
+
+function createSelect(items,selection,frame) {
+	var comboBox = NSComboBox.alloc().initWithFrame(frame),
+		selection = (selection > -1) ? selection : 0;
+
+	comboBox.addItemsWithObjectValues(items);
+	comboBox.selectItemAtIndex(selection);
+
+	return comboBox;
+}
+
+function createCheckbox(item,flag,frame) {
+	var checkbox = NSButton.alloc().initWithFrame(frame),
+		flag = (flag == false) ? NSOffState : NSOnState;
+
+	checkbox.setButtonType(NSSwitchButton);
+	checkbox.setBezelStyle(0);
+	checkbox.setTitle(item.name);
+	checkbox.setTag(item.value);
+	checkbox.setState(flag);
+
+	return checkbox;
+}
+
+function createDivider(frame) {
+	var divider = NSView.alloc().initWithFrame(frame);
+
+	divider.setWantsLayer(1);
+	divider.layer().setBackgroundColor(CGColorCreateGenericRGB(204/255,204/255,204/255,1.0));
+
+	return divider;
+}
+
+function getCachedSettings(context,settings) {
+	try {
+		for (i in settings) {
+			var value = context.command.valueForKey_onLayer_forPluginIdentifier(i,context.document.documentData(),pluginDomain);
+			if (value) settings[i] = value;
+		}
+
+		return settings;
+	} catch(err) {
+		log("There was a problem fetching cached settings.");
+	}
+}
+
+function setKeyOrder(alert,order) {
+	for (var i = 0; i < order.length; i++) {
+		var thisItem = order[i],
+			nextItem = order[i+1];
+
+		if (nextItem) thisItem.setNextKeyView(nextItem);
+	}
+
+	alert.window().setInitialFirstResponder(order[0]);
+}
+
+function displayDialog(title,body) {
+	NSApplication.sharedApplication().displayDialog_withTitle(body,title);
+}

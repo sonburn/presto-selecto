@@ -1,0 +1,26 @@
+{
+	"author" : "Jason Burns",
+	"commands" : [
+		{
+			"name" : "Presto Selecto",
+			"shortcut" : "cmd option shift p",
+			"identifier" : "presto-selecto",
+			"description" : "Configure and run Presto Selecto.",
+			"script" : "script.cocoascript",
+			"icon" : "icon-sr.png"
+		}
+	],
+    "menu" : {
+		"title" : "Presto Selecto",
+		"items" : [
+			"presto-selecto"
+		],
+		"isRoot" : true
+	},
+	"identifier" : "com.sonburn.sketchplugins.presto-selecto",
+	"version" : "0.1",
+	"description" : "Quickly select all layers of a type, whose name matches or contains a given string.",
+	"authorEmail" : "jason.burns@synchronoss.com",
+	"name" : "Presto Selecto",
+	"appcast" : "https://raw.githubusercontent.com/sonburn/presto-selecto/master/appcast.xml"
+}
