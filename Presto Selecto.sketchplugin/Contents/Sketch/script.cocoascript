@@ -10,7 +10,7 @@ var layerLabels = ["Everything","Artboards","Groups","Slices","Text Layers"],
 	matchTypes = ["is","is not","contains","begins with","ends with"],
 	matchFormats = ["==","!=","CONTAINS","BEGINSWITH","ENDSWITH"];
 
-var windowWidth = 400;
+var windowWidth = 425;
 
 var onRun = function(context) {
 	var defaultSettings = {};
@@ -36,13 +36,13 @@ var onRun = function(context) {
 	pluginWindow.setIcon(pluginIcon);
 	pluginWindow.setMessageText(pluginName);
 
-	var layerClassSelect = createSelect(layerLabels,userSettings.layerClassSelect,NSMakeRect(61,0,95,28)),
-		layerMatchSelect = createSelect(matchTypes,userSettings.layerMatchSelect,NSMakeRect(258,0,95,28)),
+	var layerClassSelect = createSelect(layerLabels,userSettings.layerClassSelect,NSMakeRect(136,0,95,28)),
+		layerMatchSelect = createSelect(matchTypes,userSettings.layerMatchSelect,NSMakeRect(333,0,95,28)),
 		layerMatchString = createTextField(userSettings.layerMatchString,"Layer string to match…",NSMakeRect(0,36,windowWidth,24)),
 		parentIncludeToggle = createCheckbox({name:"and has a parent",value:1},userSettings.parentIncludeToggle,NSMakeRect(0,88,116,16)),
-		parentClassSelect = createSelect(parentLabels,userSettings.parentClassSelect,NSMakeRect(121,82,85,28)),
-		parentTextLabel = createTextLabel("where the name",NSMakeRect(208,87,95,28)),
-		parentMatchSelect = createSelect(matchTypes,userSettings.parentMatchSelect,NSMakeRect(308,82,95,28)),
+		parentClassSelect = createSelect(parentLabels,userSettings.parentClassSelect,NSMakeRect(121,82,110,28)),
+		parentTextLabel = createTextLabel("where the name",NSMakeRect(233,87,95,28)),
+		parentMatchSelect = createSelect(matchTypes,userSettings.parentMatchSelect,NSMakeRect(333,82,95,28)),
 		parentMatchString = createTextField(userSettings.parentMatchString,"Parent string to match…",NSMakeRect(0,118,windowWidth,24)),
 		stringCaseToggle = createCheckbox({name:"Case sensitive",value:1},userSettings.stringCaseToggle,NSMakeRect(0,170,windowWidth,16));
 
@@ -88,9 +88,9 @@ var onRun = function(context) {
 		}
 	}
 
-	pluginContent.addSubview(createTextLabel("Select all",NSMakeRect(0,5,56,28)));
+	pluginContent.addSubview(createTextLabel("Wave a wand to select",NSMakeRect(0,5,131,28))); //40
 	pluginContent.addSubview(layerClassSelect);
-	pluginContent.addSubview(createTextLabel("where the name",NSMakeRect(158,5,95,28)));
+	pluginContent.addSubview(createTextLabel("where the name",NSMakeRect(233,5,95,28)));
 	pluginContent.addSubview(layerMatchSelect);
 	pluginContent.addSubview(layerMatchString);
 	pluginContent.addSubview(createDivider(NSMakeRect(0,72,windowWidth,1)));
@@ -104,7 +104,7 @@ var onRun = function(context) {
 
 	pluginWindow.setAccessoryView(pluginContent);
 
-	var selectButton = pluginWindow.addButtonWithTitle("Select");
+	var selectButton = pluginWindow.addButtonWithTitle("Abracadabra");
 
 	pluginWindow.addButtonWithTitle("Cancel");
 
