@@ -3,10 +3,10 @@
 var pluginName = "Presto Selecto",
 	pluginDomain = "com.sonburn.sketchplugins.presto-selecto";
 
-var layerLabels = ["Everything","Artboards","Groups","Slices","Text Layers"],
-	layerTypes = ["*","MSArtboardGroup","MSLayerGroup","MSSliceLayer","MSTextLayer"],
-	parentLabels = ["Artboard"],
-	parentTypes = ["parentArtboard.name"],
+var layerLabels = ["Everything","Artboards","Groups","Shapes","Slices","Text Layers"],
+	layerTypes = ["*","MSArtboardGroup","MSLayerGroup","MSShapeGroup","MSSliceLayer","MSTextLayer"],
+	parentLabels = ["Artboard","Group"],
+	parentTypes = ["parentArtboard.name","parentGroup.name"],
 	matchTypes = ["is","is not","contains","begins with","ends with"],
 	matchFormats = ["==","!=","CONTAINS","BEGINSWITH","ENDSWITH"];
 
@@ -48,16 +48,16 @@ var onRun = function(context) {
 
 	var layerClassSelectDelegate = new MochaJSDelegate({
 		"comboBoxSelectionDidChange:" : (function() {
-			if (layerClassSelect.indexOfSelectedItem() > 1) {
-				parentIncludeToggle.setEnabled(1);
-				parentTextLabel.setTextColor(NSColor.colorWithCalibratedRed_green_blue_alpha(0/255,0/255,0/255,1));
-			} else {
+			if (layerClassSelect.indexOfSelectedItem() == 1) {
 				parentIncludeToggle.setState(0);
 				parentIncludeToggle.setEnabled(0);
 				parentClassSelect.setEnabled(0);
 				parentMatchSelect.setEnabled(0);
 				parentMatchString.setEnabled(0);
 				parentTextLabel.setTextColor(NSColor.colorWithCalibratedRed_green_blue_alpha(0/255,0/255,0/255,0.25));
+			} else {
+				parentIncludeToggle.setEnabled(1);
+				parentTextLabel.setTextColor(NSColor.colorWithCalibratedRed_green_blue_alpha(0/255,0/255,0/255,1));
 			}
 		})
 	});
@@ -77,7 +77,7 @@ var onRun = function(context) {
 		}
 	});
 
-	if (userSettings.layerClassSelect <= 1) {
+	if (userSettings.layerClassSelect == 1) {
 		parentIncludeToggle.setEnabled(0);
 
 		if (userSettings.parentIncludeToggle == 0) {
@@ -104,7 +104,7 @@ var onRun = function(context) {
 
 	pluginWindow.setAccessoryView(pluginContent);
 
-	var selectButton = pluginWindow.addButtonWithTitle("Abracadabra");
+	var selectButton = pluginWindow.addButtonWithTitle("Abracadabra!");
 
 	pluginWindow.addButtonWithTitle("Cancel");
 
@@ -115,6 +115,7 @@ var onRun = function(context) {
 		layerMatchSelect.selectItemAtIndex(defaultSettings.layerMatchSelect);
 		layerMatchString.setStringValue(defaultSettings.layerMatchString);
 		parentIncludeToggle.setState(defaultSettings.parentIncludeToggle);
+		parentClassSelect.selectItemAtIndex(defaultSettings.parentClassSelect);
 		parentMatchSelect.selectItemAtIndex(defaultSettings.parentMatchSelect);
 		parentMatchString.setStringValue(defaultSettings.parentMatchString);
 		stringCaseToggle.setState(defaultSettings.stringCaseToggle);
@@ -128,6 +129,7 @@ var onRun = function(context) {
 		context.command.setValue_forKey_onLayer(nil,"layerMatchSelect",context.document.documentData());
 		context.command.setValue_forKey_onLayer(nil,"layerMatchString",context.document.documentData());
 		context.command.setValue_forKey_onLayer(nil,"parentIncludeToggle",context.document.documentData());
+		context.command.setValue_forKey_onLayer(nil,"parentClassSelect",context.document.documentData());
 		context.command.setValue_forKey_onLayer(nil,"parentMatchSelect",context.document.documentData());
 		context.command.setValue_forKey_onLayer(nil,"parentMatchString",context.document.documentData());
 		context.command.setValue_forKey_onLayer(nil,"stringCaseToggle",context.document.documentData());
@@ -153,12 +155,12 @@ var onRun = function(context) {
 			var windowResponse = pluginWindow.runModal();
 
 			if (windowResponse == 1000) {
-				var layerMatchClass = layerTypes[layerClassSelect.indexOfSelectedItem()],
+				var layerMatchType = layerTypes[layerClassSelect.indexOfSelectedItem()],
 					layerMatchFormat = matchFormats[layerMatchSelect.indexOfSelectedItem()],
 					layerMatchCase = (stringCaseToggle.state() == 1) ? "" : "[c]",
 					layerMatchValue = layerMatchString.stringValue(),
 					parentToggleState = parentIncludeToggle.state(),
-					parentMatchClass = parentTypes[parentClassSelect.indexOfSelectedItem()],
+					parentMatchType = parentTypes[parentClassSelect.indexOfSelectedItem()],
 					parentMatchFormat = matchFormats[parentMatchSelect.indexOfSelectedItem()],
 					parentMatchCase = (stringCaseToggle.state() == 1) ? "" : "[c]",
 					parentMatchValue = parentMatchString.stringValue();
@@ -184,14 +186,21 @@ var onRun = function(context) {
 					context.command.setValue_forKey_onLayer(layerMatchSelect.indexOfSelectedItem(),"layerMatchSelect",context.document.documentData());
 					context.command.setValue_forKey_onLayer(layerMatchString.stringValue(),"layerMatchString",context.document.documentData());
 					context.command.setValue_forKey_onLayer(parentIncludeToggle.state(),"parentIncludeToggle",context.document.documentData());
+					context.command.setValue_forKey_onLayer(parentClassSelect.indexOfSelectedItem(),"parentClassSelect",context.document.documentData());
 					context.command.setValue_forKey_onLayer(parentMatchSelect.indexOfSelectedItem(),"parentMatchSelect",context.document.documentData());
 					context.command.setValue_forKey_onLayer(parentMatchString.stringValue(),"parentMatchString",context.document.documentData());
 					context.command.setValue_forKey_onLayer(stringCaseToggle.state(),"stringCaseToggle",context.document.documentData());
 
+					var predicate;
+
 					if (parentIncludeToggle.state() == 1) {
-						var predicate = NSPredicate.predicateWithFormat("className LIKE %@ AND name " + layerMatchFormat + layerMatchCase + " %@ AND " + parentMatchClass + " " + parentMatchFormat + parentMatchCase + " %@",layerMatchClass,layerMatchValue,parentMatchValue);
+						if (parentClassSelect.indexOfSelectedItem() == 0) {
+							predicate = NSPredicate.predicateWithFormat("className LIKE %@ AND name " + layerMatchFormat + layerMatchCase + " %@ AND " + parentMatchType + " " + parentMatchFormat + parentMatchCase + " %@",layerMatchType,layerMatchValue,parentMatchValue);
+						} else {
+							predicate = NSPredicate.predicateWithFormat("className LIKE %@ AND name " + layerMatchFormat + layerMatchCase + " %@ AND parentGroup.className == %@ AND " + parentMatchType + " " + parentMatchFormat + parentMatchCase + " %@",layerMatchType,layerMatchValue,"MSLayerGroup",parentMatchValue);
+						}
 					} else {
-						var predicate = NSPredicate.predicateWithFormat("className LIKE %@ AND name " + layerMatchFormat + layerMatchCase + " %@",layerMatchClass,layerMatchValue);
+						predicate = NSPredicate.predicateWithFormat("className LIKE %@ AND name " + layerMatchFormat + layerMatchCase + " %@",layerMatchType,layerMatchValue);
 					}
 
 					var page = context.document.currentPage(),
@@ -207,8 +216,10 @@ var onRun = function(context) {
 						count++;
 					}
 
-					if (count > 0) {
-						context.document.showMessage(matches.count() + " " + layerLabels[layerClassSelect.indexOfSelectedItem()] + " selected");
+					if (count == 1) {
+						context.document.showMessage(matches.count() + " match selected");
+					} else if (count > 1) {
+						context.document.showMessage(matches.count() + " matches selected");
 					} else {
 						context.document.showMessage("No matches found");
 					}
@@ -255,6 +266,7 @@ function createSelect(items,selection,frame) {
 
 	comboBox.addItemsWithObjectValues(items);
 	comboBox.selectItemAtIndex(selection);
+	comboBox.setNumberOfVisibleItems(12);
 
 	return comboBox;
 }

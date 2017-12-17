@@ -6,15 +6,15 @@
 		<description>Quickly select all layers of a type, whose name matches or contains a given string.</description>
 		<language>en</language>
 		<item>
-			<title>Version 0.2</title>
+			<title>Version 0.3</title>
 			<description>
 				<![CDATA[
 				<ul>
-				<li>Verbiage improvements.</li>
+				<li>Matching against Everything now allows for a parent, a parent can now also be a group, and added the ability to search for shapes.</li>
 				</ul>
 				]]>
 			</description>
-			<enclosure url="https://github.com/sonburn/unused-style-remover/archive/master.zip" sparkle:version="0.2" />
+			<enclosure url="https://github.com/sonburn/unused-style-remover/archive/master.zip" sparkle:version="0.3" />
 		</item>
 	</channel>
 </rss>

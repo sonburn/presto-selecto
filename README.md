@@ -39,6 +39,7 @@ To find your plugins directory...
 
 # Changelog
 
+* **0.3** - Matching against Everything now allows for a parent, a parent can now also be a group, and added the ability to search for shapes.
 * **0.2** - Verbiage improvements.
 * **0.1** - Initial commit.
 
