@@ -25,7 +25,7 @@ Quickly select all layers of a type, whose name matches or contains a given stri
 ## Automatic
 Search for Presto Selecto in [Sketchrunner](http://sketchrunner.com/), [Sketchpacks](https://sketchpacks.com/), or [Sketch Toolbox](http://sketchtoolbox.com/) if you have one of those installed.
 
-Once installed, Sketch will automatically notify you when an update is available (version 0.1 and later).
+Once installed, Sketch will automatically notify you when an update is available (version 0.4 and later).
 
 ## Manual
 
@@ -39,6 +39,7 @@ To find your plugins directory...
 
 # Changelog
 
+* **0.4** - Matching strings is now optional, meaning you can simply select layers of a type within a parent of a type. Fixed appcast.xml issue.
 * **0.3** - Matching against Everything now allows for a parent, a parent can now also be a group, and added the ability to search for shapes.
 * **0.2** - Verbiage improvements.
 * **0.1** - Initial commit.

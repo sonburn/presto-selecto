@@ -18,7 +18,7 @@
 		"isRoot" : true
 	},
 	"identifier" : "com.sonburn.sketchplugins.presto-selecto",
-	"version" : "0.3",
+	"version" : "0.4",
 	"description" : "Quickly select all layers of a type, whose name matches or contains a given string.",
 	"authorEmail" : "jason.burns@synchronoss.com",
 	"name" : "Presto Selecto",
