@@ -6,15 +6,15 @@
 		<description>Quickly select all layers of a type, whose name matches or contains a given string.</description>
 		<language>en</language>
 		<item>
-			<title>Version 0.4</title>
+			<title>Version 0.5</title>
 			<description>
 				<![CDATA[
 				<ul>
-				<li>Matching strings is now optional, meaning you can simply select layers of a type within a parent of a type. Fixed appcast.xml issue.</li>
+				<li>Added the ability to select symbol masters and instances, and match within a group's ancestors.</li>
 				</ul>
 				]]>
 			</description>
-			<enclosure url="https://github.com/sonburn/presto-selecto/archive/master.zip" sparkle:version="0.4" />
+			<enclosure url="https://github.com/sonburn/presto-selecto/archive/master.zip" sparkle:version="0.5" />
 		</item>
 	</channel>
 </rss>

@@ -39,6 +39,7 @@ To find your plugins directory...
 
 # Changelog
 
+* **0.5** - Added the ability to select symbol masters and instances, and match within a group's ancestors.
 * **0.4** - Matching strings is now optional, meaning you can simply select layers of a type within a parent of a type. Fixed appcast.xml issue.
 * **0.3** - Matching against Everything now allows for a parent, a parent can now also be a group, and added the ability to search for shapes.
 * **0.2** - Verbiage improvements.
