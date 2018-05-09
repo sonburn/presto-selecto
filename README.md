@@ -39,6 +39,7 @@ To find your plugins directory...
 
 # Changelog
 
+* **0.7** - General optimizations.
 * **0.6** - Added plugin icon to manifest for Sketch 50.
 * **0.5** - Added the ability to select symbol masters and instances, and match within a group's ancestors.
 * **0.4** - Matching strings is now optional, meaning you can simply select layers of a type within a parent of a type. Fixed appcast.xml issue.

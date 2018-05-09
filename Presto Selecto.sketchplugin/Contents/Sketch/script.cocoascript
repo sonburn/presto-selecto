@@ -1,4 +1,4 @@
-@import 'MochaJSDelegate.js';
+@import "MochaJSDelegate.js";
 
 var pluginName = "Presto Selecto",
 	pluginDomain = "com.sonburn.sketchplugins.presto-selecto";
@@ -9,11 +9,12 @@ var layerLabels = ["Everything","Artboards","Groups","Shapes","Slices","Symbol I
 	parentLabels = ["Artboard","Group"],
 	parentTypes = ["parentArtboard.name","parentGroup.name"],
 	matchTypes = ["is","is not","contains","begins with","ends with"],
-	matchFormats = ["==","!=","CONTAINS","BEGINSWITH","ENDSWITH"];
+	matchFormats = ["==","!=","CONTAINS","BEGINSWITH","ENDSWITH"],
+	debugMode = false;
 
 var windowWidth = 400;
 
-var onRun = function(context) {
+var select = function(context) {
 	var defaultSettings = {};
 
 	defaultSettings.layerClassSelect = 0;
@@ -31,12 +32,12 @@ var onRun = function(context) {
 
 	var userSettings = Object.assign({},defaultSettings);
 
-	userSettings = getCachedSettings(context,userSettings);
+	userSettings = getSettings(context,userSettings);
 
 	var pluginWindow = NSAlert.alloc().init(),
 		pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path(),
 		pluginIcon = NSImage.alloc().initByReferencingFile(pluginIconPath),
-		pluginContent = createContentView(NSMakeRect(0,0,windowWidth,186));
+		pluginContent = createView(NSMakeRect(0,0,windowWidth,186));
 
 	pluginWindow.setIcon(pluginIcon);
 	pluginWindow.setMessageText(pluginName);
@@ -45,13 +46,13 @@ var onRun = function(context) {
 		layerTargetSelect = createSelect(targetLabels,userSettings.layerTargetSelect,NSMakeRect(283,0,81,28)),
 		layerMatchToggle = createCheckbox({name:"where the name",value:1},userSettings.layerMatchToggle,NSMakeRect(0,38,112,16)),
 		layerMatchSelect = createSelect(matchTypes,userSettings.layerMatchSelect,NSMakeRect(118,32,93,28)),
-		layerMatchString = createTextField(userSettings.layerMatchString,"Layer string to match",NSMakeRect(216,34,windowWidth-216,24)),
+		layerMatchString = createField(userSettings.layerMatchString,"Layer string to match",NSMakeRect(216,34,windowWidth-216,24)),
 		parentIncludeToggle = createCheckbox({name:"and has a parent",value:1},userSettings.parentIncludeToggle,NSMakeRect(0,88,116,16)),
 		parentClassSelect = createSelect(parentLabels,userSettings.parentClassSelect,NSMakeRect(121,82,79,28)),
 		parentAncestorToggle = createCheckbox({name:"include ancestors",value:1},userSettings.parentAncestorToggle,NSMakeRect(205,88,121,16)),
 		parentMatchToggle = createCheckbox({name:"where the name",value:1},userSettings.parentMatchToggle,NSMakeRect(0,120,112,16)),
 		parentMatchSelect = createSelect(matchTypes,userSettings.parentMatchSelect,NSMakeRect(118,114,93,28)),
-		parentMatchString = createTextField(userSettings.parentMatchString,"Parent string to match",NSMakeRect(216,116,windowWidth-216,24)),
+		parentMatchString = createField(userSettings.parentMatchString,"Parent string to match",NSMakeRect(216,116,windowWidth-216,24)),
 		stringCaseToggle = createCheckbox({name:"Case sensitive",value:1},userSettings.stringCaseToggle,NSMakeRect(0,170,windowWidth,16));
 
 	var layerClassSelectDelegate = new MochaJSDelegate({
@@ -123,9 +124,9 @@ var onRun = function(context) {
 		}
 	}
 
-	pluginContent.addSubview(createTextLabel("Select",NSMakeRect(0,5,40,28)));
+	pluginContent.addSubview(createLabel("Select",NSMakeRect(0,5,40,28)));
 	pluginContent.addSubview(layerClassSelect);
-	pluginContent.addSubview(createTextLabel("within the current",NSMakeRect(174,5,104,28)));
+	pluginContent.addSubview(createLabel("within the current",NSMakeRect(174,5,104,28)));
 	pluginContent.addSubview(layerTargetSelect);
 	pluginContent.addSubview(layerMatchToggle);
 	pluginContent.addSubview(layerMatchSelect);
@@ -332,6 +333,8 @@ var onRun = function(context) {
 						context.document.showMessage("No matches found");
 					}
 
+					if (!debugMode) googleAnalytics(context,"select","run");
+
 					break;
 				case false :
 					break;
@@ -340,43 +343,16 @@ var onRun = function(context) {
 	}
 }
 
-function createContentView(frame) {
-	var view = NSView.alloc().initWithFrame(frame);
+var report = function(context) {
+	openUrl("https://github.com/sonburn/presto-selecto/issues/new");
 
-	view.setFlipped(1);
-
-	return view;
+	if (!debugMode) googleAnalytics(context,"report","report");
 }
 
-function createTextLabel(string,frame) {
-	var textLabel = NSTextField.alloc().initWithFrame(frame);
+var donate = function(context) {
+	openUrl("https://www.paypal.me/sonburn");
 
-	textLabel.setStringValue(string);
-	textLabel.setBezeled(0);
-	textLabel.setEditable(0);
-	textLabel.setDrawsBackground(0);
-
-	return textLabel;
-}
-
-function createTextField(string,placeholder,frame) {
-	var textField = NSTextField.alloc().initWithFrame(frame);
-
-	textField.setStringValue(string);
-	textField.setPlaceholderString(placeholder);
-
-	return textField;
-}
-
-function createSelect(items,selection,frame) {
-	var comboBox = NSComboBox.alloc().initWithFrame(frame),
-		selection = (selection > -1) ? selection : 0;
-
-	comboBox.addItemsWithObjectValues(items);
-	comboBox.selectItemAtIndex(selection);
-	comboBox.setNumberOfVisibleItems(12);
-
-	return comboBox;
+	if (!debugMode) googleAnalytics(context,"donate","donate");
 }
 
 function createCheckbox(item,flag,frame) {
@@ -401,7 +377,50 @@ function createDivider(frame) {
 	return divider;
 }
 
-function getCachedSettings(context,settings) {
+function createField(string,placeholder,frame) {
+	var textField = NSTextField.alloc().initWithFrame(frame);
+
+	textField.setStringValue(string);
+	textField.setPlaceholderString(placeholder);
+
+	return textField;
+}
+
+function createLabel(string,frame) {
+	var textLabel = NSTextField.alloc().initWithFrame(frame);
+
+	textLabel.setStringValue(string);
+	textLabel.setBezeled(0);
+	textLabel.setEditable(0);
+	textLabel.setDrawsBackground(0);
+
+	return textLabel;
+}
+
+function createSelect(items,selection,frame) {
+	var comboBox = NSComboBox.alloc().initWithFrame(frame),
+		selection = (selection > -1) ? selection : 0;
+
+	comboBox.addItemsWithObjectValues(items);
+	comboBox.selectItemAtIndex(selection);
+	comboBox.setNumberOfVisibleItems(12);
+
+	return comboBox;
+}
+
+function createView(frame) {
+	var view = NSView.alloc().initWithFrame(frame);
+
+	view.setFlipped(1);
+
+	return view;
+}
+
+function displayDialog(title,body) {
+	NSApplication.sharedApplication().displayDialog_withTitle(body,title);
+}
+
+function getSettings(context,settings) {
 	try {
 		for (i in settings) {
 			var value = context.command.valueForKey_onLayer_forPluginIdentifier(i,context.document.documentData(),pluginDomain);
@@ -414,6 +433,54 @@ function getCachedSettings(context,settings) {
 	}
 }
 
+function googleAnalytics(context,category,action,label,value) {
+	var trackingID = "UA-118972367-1",
+		uuidKey = "google.analytics.uuid",
+		uuid = NSUserDefaults.standardUserDefaults().objectForKey(uuidKey);
+
+	if (!uuid) {
+		uuid = NSUUID.UUID().UUIDString();
+		NSUserDefaults.standardUserDefaults().setObject_forKey(uuid,uuidKey);
+	}
+
+	var url = "https://www.google-analytics.com/collect?v=1";
+	// Tracking ID
+	url += "&tid=" + trackingID;
+	// Source
+	url += "&ds=sketch" + MSApplicationMetadata.metadata().appVersion;
+	// Client ID
+	url += "&cid=" + uuid;
+	// pageview, screenview, event, transaction, item, social, exception, timing
+	url += "&t=event";
+	// App Name
+	url += "&an=" + encodeURI(context.plugin.name());
+	// App ID
+	url += "&aid=" + context.plugin.identifier();
+	// App Version
+	url += "&av=" + context.plugin.version();
+	// Event category
+	url += "&ec=" + encodeURI(category);
+	// Event action
+	url += "&ea=" + encodeURI(action);
+	// Event label
+	if (label) {
+		url += "&el=" + encodeURI(label);
+	}
+	// Event value
+	if (value) {
+		url += "&ev=" + encodeURI(value);
+	}
+
+	var session = NSURLSession.sharedSession(),
+		task = session.dataTaskWithURL(NSURL.URLWithString(NSString.stringWithString(url)));
+
+	task.resume();
+}
+
+function openUrl(url) {
+	NSWorkspace.sharedWorkspace().openURL(NSURL.URLWithString(url));
+}
+
 function setKeyOrder(alert,order) {
 	for (var i = 0; i < order.length; i++) {
 		var thisItem = order[i],
@@ -423,8 +490,4 @@ function setKeyOrder(alert,order) {
 	}
 
 	alert.window().setInitialFirstResponder(order[0]);
-}
-
-function displayDialog(title,body) {
-	NSApplication.sharedApplication().displayDialog_withTitle(body,title);
 }

@@ -6,15 +6,15 @@
 		<description>Quickly select all layers of a type, whose name matches or contains a given string.</description>
 		<language>en</language>
 		<item>
-			<title>Version 0.6</title>
+			<title>Version 0.7</title>
 			<description>
 				<![CDATA[
 				<ul>
-				<li>Added plugin icon to manifest for Sketch 50.</li>
+				<li>General optimizations.</li>
 				</ul>
 				]]>
 			</description>
-			<enclosure url="https://github.com/sonburn/presto-selecto/archive/master.zip" sparkle:version="0.6" />
+			<enclosure url="https://github.com/sonburn/presto-selecto/archive/master.zip" sparkle:version="0.7" />
 		</item>
 	</channel>
 </rss>
