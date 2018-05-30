@@ -8,8 +8,8 @@ var layerLabels = ["Everything","Artboards","Groups","Shapes","Slices","Symbol I
 	targetLabels = ["Page"],
 	parentLabels = ["Artboard","Group"],
 	parentTypes = ["parentArtboard.name","parentGroup.name"],
-	matchTypes = ["is","is not","contains","begins with","ends with"],
-	matchFormats = ["==","!=","CONTAINS","BEGINSWITH","ENDSWITH"],
+	matchTypes = ["is","is not","contains","begins with","ends with","is like (a?b*e)"],
+	matchFormats = ["==","!=","CONTAINS","BEGINSWITH","ENDSWITH","LIKE"],
 	debugMode = false;
 
 var windowWidth = 400;
