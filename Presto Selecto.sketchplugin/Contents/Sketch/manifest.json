@@ -38,5 +38,6 @@
 	"authorEmail" : "jason.burns@synchronoss.com",
 	"name" : "Presto Selecto",
 	"icon" : "icon.png",
-	"appcast" : "https://raw.githubusercontent.com/sonburn/presto-selecto/master/appcast.xml"
+	"appcast" : "https://raw.githubusercontent.com/sonburn/presto-selecto/master/appcast.xml",
+	"homepage" : "https://github.com/sonburn/presto-selecto"
 }
