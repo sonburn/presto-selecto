@@ -1,25 +1,37 @@
 {
+	"name" : "Presto Selecto",
+	"description" : "Quickly select all layers of a type, whose name matches or contains a given string.",
 	"author" : "Jason Burns",
+	"homepage" : "https://github.com/sonburn/presto-selecto",
+	"version" : "0.8",
+	"identifier" : "com.sonburn.sketchplugins.presto-selecto",
+	"appcast" : "https://raw.githubusercontent.com/sonburn/presto-selecto/master/appcast.xml",
+	"icon" : "icon.png",
 	"commands" : [
 		{
 			"name" : "Presto Selecto",
 			"shortcut" : "cmd option shift p",
 			"identifier" : "select",
 			"description" : "Configure and run Presto Selecto.",
-			"script" : "script.cocoascript",
-			"icon" : "icon-sr.png",
+			"script" : "script.js",
 			"handler" : "select"
 		},
 		{
 			"name": "Report Issue",
 			"identifier": "report",
-			"script" : "script.cocoascript",
+			"script" : "script.js",
 			"handler": "report"
+		},
+		{
+			"name": "Other Plugins",
+			"identifier": "plugins",
+			"script" : "script.js",
+			"handler": "plugins"
 		},
 		{
 			"name": "Donate",
 			"identifier": "donate",
-			"script" : "script.cocoascript",
+			"script" : "script.js",
 			"handler": "donate"
 		}
 	],
@@ -29,15 +41,8 @@
 			"select",
 			"-",
 			"report",
+			"plugins",
 			"donate"
 		]
-	},
-	"identifier" : "com.sonburn.sketchplugins.presto-selecto",
-	"version" : "0.7",
-	"description" : "Quickly select all layers of a type, whose name matches or contains a given string.",
-	"authorEmail" : "jason.burns@synchronoss.com",
-	"name" : "Presto Selecto",
-	"icon" : "icon.png",
-	"appcast" : "https://raw.githubusercontent.com/sonburn/presto-selecto/master/appcast.xml",
-	"homepage" : "https://github.com/sonburn/presto-selecto"
+	}
 }

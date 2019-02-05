@@ -39,6 +39,7 @@ To find your plugins directory...
 
 # Changelog
 
+* **0.8** - Update for Sketch 53.
 * **0.7** - General optimizations.
 * **0.6** - Added plugin icon to manifest for Sketch 50.
 * **0.5** - Added the ability to select symbol masters and instances, and match within a group's ancestors.
@@ -57,4 +58,4 @@ If you find this plugin helpful, or would like to support my plugins in general,
 
 # License
 
-Copyright (c) 2018 Jason Burns (Sonburn). See LICENSE.md for further details.
+Copyright (c) 2019 Jason Burns (Sonburn). See LICENSE.md for further details.

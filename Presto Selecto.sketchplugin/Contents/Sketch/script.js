@@ -1,4 +1,6 @@
-@import "MochaJSDelegate.js";
+@import "delegate.js";
+
+var sketch = require("sketch");
 
 var pluginName = "Presto Selecto",
 	pluginDomain = "com.sonburn.sketchplugins.presto-selecto";
@@ -321,7 +323,7 @@ var select = function(context) {
 					page.changeSelectionBySelectingLayers(nil);
 
 					while (match = loop.nextObject()) {
-						match.select_byExpandingSelection(true,true);
+						match.select_byExtendingSelection(1,0);
 						count++;
 					}
 
@@ -347,6 +349,12 @@ var report = function(context) {
 	openUrl("https://github.com/sonburn/presto-selecto/issues/new");
 
 	if (!debugMode) googleAnalytics(context,"report","report");
+}
+
+var plugins = function(context) {
+	openUrl("https://sonburn.github.io/");
+
+	if (!debugMode) googleAnalytics(context,"plugins","plugins");
 }
 
 var donate = function(context) {
