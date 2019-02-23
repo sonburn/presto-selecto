@@ -323,7 +323,7 @@ var select = function(context) {
 					page.changeSelectionBySelectingLayers(nil);
 
 					while (match = loop.nextObject()) {
-						match.select_byExtendingSelection(1,0);
+						match.select_byExtendingSelection(1,1);
 						count++;
 					}
 
