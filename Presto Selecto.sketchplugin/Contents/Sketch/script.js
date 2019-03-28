@@ -7,7 +7,7 @@ var pluginName = "Presto Selecto",
 
 var layerLabels = ["Everything","Artboards","Groups","Shapes","Slices","Symbol Instances","Symbol Masters","Text Layers"],
 	layerTypes = ["*","MSArtboardGroup","MSLayerGroup","MSShapeGroup","MSSliceLayer","MSSymbolInstance","MSSymbolMaster","MSTextLayer"],
-	targetLabels = ["Page"],
+	targetLabels = ["Page","Selection"],
 	parentLabels = ["Artboard","Group"],
 	parentTypes = ["parentArtboard.name","parentGroup.name"],
 	matchTypes = ["is","is not","contains","begins with","ends with"],
@@ -20,8 +20,8 @@ var select = function(context) {
 	var defaultSettings = {};
 
 	defaultSettings.layerClassSelect = 0;
-	defaultSettings.layerMatchToggle = 0;
 	defaultSettings.layerTargetSelect = 0;
+	defaultSettings.layerMatchToggle = 0;
 	defaultSettings.layerMatchSelect = 0;
 	defaultSettings.layerMatchString = "";
 	defaultSettings.parentIncludeToggle = 0;
@@ -118,7 +118,8 @@ var select = function(context) {
 		parentMatchToggle.setEnabled(0);
 		parentMatchSelect.setEnabled(0);
 		parentMatchString.setEnabled(0);
-
+		parentAncestorToggle.setEnabled(0);
+	} else {
 		if (parentClassSelect.indexOfSelectedItem() == 1) {
 			parentAncestorToggle.setEnabled(1);
 		} else {
@@ -238,15 +239,15 @@ var select = function(context) {
 			switch (windowStatus) {
 				case null :
 					if (layerMatchToggleState == 1 && layerMatchValue != "") {
-						displayDialog(pluginName,"Please provide a layer string to search for.");
+						sketch.UI.alert(pluginName,"Please provide a layer string to search for.");
 					} else {
-						displayDialog(pluginName,"Please provide a parent string to search for.");
+						sketch.UI.alert(pluginName,"Please provide a parent string to search for.");
 					}
 
 					break;
 				case true :
 					context.command.setValue_forKey_onLayer(layerClassSelect.indexOfSelectedItem(),"layerClassSelect",context.document.documentData());
-					context.command.setValue_forKey_onLayer(layerTargetSelect.indexOfSelectedItem(),"layerTargetType",context.document.documentData());
+					context.command.setValue_forKey_onLayer(layerTargetSelect.indexOfSelectedItem(),"layerTargetSelect",context.document.documentData());
 					context.command.setValue_forKey_onLayer(layerMatchToggle.state(),"layerMatchToggle",context.document.documentData());
 					context.command.setValue_forKey_onLayer(layerMatchSelect.indexOfSelectedItem(),"layerMatchSelect",context.document.documentData());
 					context.command.setValue_forKey_onLayer(layerMatchString.stringValue(),"layerMatchString",context.document.documentData());
@@ -257,6 +258,8 @@ var select = function(context) {
 					context.command.setValue_forKey_onLayer(parentMatchSelect.indexOfSelectedItem(),"parentMatchSelect",context.document.documentData());
 					context.command.setValue_forKey_onLayer(parentMatchString.stringValue(),"parentMatchString",context.document.documentData());
 					context.command.setValue_forKey_onLayer(stringCaseToggle.state(),"stringCaseToggle",context.document.documentData());
+
+					context.command.setValue_forKey_onLayer(nil,"layerTargetType",context.document.documentData());
 
 					var page = context.document.currentPage(),
 						predicate,
@@ -294,9 +297,13 @@ var select = function(context) {
 					if (layerTargetType == 0) {
 						matches = page.children().filteredArrayUsingPredicate(predicate);
 					} else {
-						matches = context.selection.filteredArrayUsingPredicate(predicate);
+						matches = NSMutableArray.array();
 
-						// Need to do some recursive magic here, instead of the selection method above
+						context.selection.filteredArrayUsingPredicate(predicate).forEach(match => matches.addObject(match));
+
+						context.selection.forEach(function(selection){
+							selection.children().filteredArrayUsingPredicate(predicate).forEach(match => matches.addObject(match));
+						});
 					}
 
 					if (ancestorFilter) {
@@ -328,11 +335,11 @@ var select = function(context) {
 					}
 
 					if (count == 1) {
-						context.document.showMessage(matches.count() + " match selected");
+						sketch.UI.message(matches.count() + " match selected");
 					} else if (count > 1) {
-						context.document.showMessage(matches.count() + " matches selected");
+						sketch.UI.message(matches.count() + " matches selected");
 					} else {
-						context.document.showMessage("No matches found");
+						sketch.UI.message("No matches found");
 					}
 
 					if (!debugMode) googleAnalytics(context,"select","run");
@@ -422,10 +429,6 @@ function createView(frame) {
 	view.setFlipped(1);
 
 	return view;
-}
-
-function displayDialog(title,body) {
-	NSApplication.sharedApplication().displayDialog_withTitle(body,title);
 }
 
 function getSettings(context,settings) {

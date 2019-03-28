@@ -39,6 +39,7 @@ To find your plugins directory...
 
 # Changelog
 
+* **1.0** - Added ability to select within selection.
 * **0.9** - Fixed issue where not all selections were being made.
 * **0.8** - Update for Sketch 53.
 * **0.7** - General optimizations.

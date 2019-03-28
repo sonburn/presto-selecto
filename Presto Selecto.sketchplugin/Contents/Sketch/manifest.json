@@ -3,7 +3,7 @@
 	"description" : "Quickly select all layers of a type, whose name matches or contains a given string.",
 	"author" : "Jason Burns",
 	"homepage" : "https://github.com/sonburn/presto-selecto",
-	"version" : "0.9",
+	"version" : "1.0",
 	"identifier" : "com.sonburn.sketchplugins.presto-selecto",
 	"appcast" : "https://raw.githubusercontent.com/sonburn/presto-selecto/master/appcast.xml",
 	"icon" : "icon.png",
