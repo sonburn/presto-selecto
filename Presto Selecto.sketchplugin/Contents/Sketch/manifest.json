@@ -12,31 +12,34 @@
 			"name" : "Presto Selecto",
 			"shortcut" : "cmd option shift p",
 			"identifier" : "select",
-			"icon": "icon.png",
 			"description" : "Configure and run Presto Selecto.",
+			"icon" : "icon.png",
 			"script" : "script.js",
 			"handler" : "select"
 		},
 		{
-			"name": "Report Issue",
-			"identifier": "report",
-			"icon": "icon.png",
+			"name" : "Report Issue",
+			"identifier" : "report",
+			"description" : "Report an issue with Presto Selecto.",
+			"icon" : "icon.png",
 			"script" : "script.js",
-			"handler": "report"
+			"handler" : "report"
 		},
 		{
-			"name": "Other Plugins",
-			"identifier": "plugins",
-			"icon": "icon.png",
+			"name" : "Other Plugins",
+			"identifier" : "plugins",
+			"description" : "View all of Sonburn's plugins.",
+			"icon" : "icon.png",
 			"script" : "script.js",
-			"handler": "plugins"
+			"handler" : "plugins"
 		},
 		{
-			"name": "Donate",
-			"identifier": "donate",
-			"icon": "icon.png",
+			"name" : "Donate",
+			"identifier" : "donate",
+			"description" : "Donate to the development of Presto Selecto.",
+			"icon" : "icon.png",
 			"script" : "script.js",
-			"handler": "donate"
+			"handler" : "donate"
 		}
 	],
 	"menu" : {
