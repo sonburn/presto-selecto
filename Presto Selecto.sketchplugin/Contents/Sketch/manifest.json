@@ -12,6 +12,7 @@
 			"name" : "Presto Selecto",
 			"shortcut" : "cmd option shift p",
 			"identifier" : "select",
+			"icon": "icon.png",
 			"description" : "Configure and run Presto Selecto.",
 			"script" : "script.js",
 			"handler" : "select"
@@ -19,18 +20,21 @@
 		{
 			"name": "Report Issue",
 			"identifier": "report",
+			"icon": "icon.png",
 			"script" : "script.js",
 			"handler": "report"
 		},
 		{
 			"name": "Other Plugins",
 			"identifier": "plugins",
+			"icon": "icon.png",
 			"script" : "script.js",
 			"handler": "plugins"
 		},
 		{
 			"name": "Donate",
 			"identifier": "donate",
+			"icon": "icon.png",
 			"script" : "script.js",
 			"handler": "donate"
 		}
