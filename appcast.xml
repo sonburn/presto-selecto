@@ -6,15 +6,15 @@
 		<description>Quickly select all layers of a type, whose name matches or contains a given string.</description>
 		<language>en</language>
 		<item>
-			<title>Version 1.0</title>
+			<title>Version 1.1</title>
 			<description>
 				<![CDATA[
 				<ul>
-				<li>Added ability to select within selection.</li>
+				<li>Improved Shape selections. Fix for Sketch 72.</li>
 				</ul>
 				]]>
 			</description>
-			<enclosure url="https://github.com/sonburn/presto-selecto/archive/master.zip" sparkle:version="1.0" />
+			<enclosure url="https://github.com/sonburn/presto-selecto/archive/master.zip" sparkle:version="1.1" />
 		</item>
 	</channel>
 </rss>

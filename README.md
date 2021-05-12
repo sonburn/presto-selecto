@@ -8,10 +8,6 @@ Quickly select all layers of a type, whose name matches or contains a given stri
 	<img width="160" height="41" src="http://bit.ly/RunnerBadgeBlue" alt="runner-badge-blue">
 </a>
 
-<a href="https://sketchpacks.com/sonburn/presto-selecto/install">
-	<img width="160" height="41" src="http://sketchpacks-com.s3.amazonaws.com/assets/badges/sketchpacks-badge-install.png" >
-</a>
-
 <a href="https://www.paypal.me/sonburn">
 	<img width="160" height="41" src="https://raw.githubusercontent.com/sonburn/symbol-organizer/master/images/donate.png">
 </a>
@@ -23,7 +19,7 @@ Quickly select all layers of a type, whose name matches or contains a given stri
 # Installation
 
 ## Automatic
-Search for Presto Selecto in [Sketchrunner](http://sketchrunner.com/), [Sketchpacks](https://sketchpacks.com/), or [Sketch Toolbox](http://sketchtoolbox.com/) if you have one of those installed.
+Search for Presto Selecto in [Sketchrunner](http://sketchrunner.com/) or [Sketch Toolbox](http://sketchtoolbox.com/) if you have one of those installed.
 
 Once installed, Sketch will automatically notify you when an update is available (version 0.4 and later).
 
@@ -39,6 +35,7 @@ To find your plugins directory...
 
 # Changelog
 
+* **1.1** - Improved Shape selections. Fix for Sketch 72.
 * **1.0** - Added ability to select within selection.
 * **0.9** - Fixed issue where not all selections were being made.
 * **0.8** - Update for Sketch 53.
@@ -60,4 +57,4 @@ If you find this plugin helpful, or would like to support my plugins in general,
 
 # License
 
-Copyright (c) 2019 Jason Burns (Sonburn). See LICENSE.md for further details.
+Copyright (c) 2021 Jason Burns (Sonburn). See LICENSE.md for further details.
